@@ -23,9 +23,19 @@ StyleDictionary.registerFormat({
         // For typography, we'll create individual keys
         const props = [];
         if (token.fontFamily) props.push(`    <system:String x:Key="${name}FontFamily">${token.fontFamily}</system:String>`);
-        if (token.fontSize) props.push(`    <system:Double x:Key="${name}FontSize">${parseFloat(token.fontSize)}</system:Double>`);
+        if (token.fontSize) {
+          const fontSizeValue = parseFloat(token.fontSize);
+          if (!Number.isNaN(fontSizeValue)) {
+            props.push(`    <system:Double x:Key="${name}FontSize">${fontSizeValue}</system:Double>`);
+          }
+        }
         if (token.fontWeight) props.push(`    <system:String x:Key="${name}FontWeight">${token.fontWeight}</system:String>`);
-        if (token.lineHeight) props.push(`    <system:Double x:Key="${name}LineHeight">${parseFloat(token.lineHeight)}</system:Double>`);
+        if (token.lineHeight) {
+          const lineHeightValue = parseFloat(token.lineHeight);
+          if (!Number.isNaN(lineHeightValue)) {
+            props.push(`    <system:Double x:Key="${name}LineHeight">${lineHeightValue}</system:Double>`);
+          }
+        }
         return props.join('\n');
       }
       
