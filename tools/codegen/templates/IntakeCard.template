@@ -1,0 +1,70 @@
+@* AUTO-GENERATED Component - Edit template, not this file *@
+
+<div class="{{COMPONENT_NAME}} {{COMPONENT_NAME}}--@Variant.ToString().ToLower()" 
+     style="background: {{COLOR_SURFACE}}; padding: @(Variant == CardVariant.Compact ? "{{SPACE_SM}}" : "{{SPACE_MD}}"); margin-bottom: {{SPACE_SM}};">
+    
+    <div class="card-header" style="margin-bottom: {{SPACE_SM}};">
+        <h3 style="color: {{COLOR_ONSURFACE}}; margin: 0;">@PatientName</h3>
+    </div>
+    
+    @if (Variant == CardVariant.Detailed)
+    {
+        <div class="card-body">
+            <p style="color: {{COLOR_ONSURFACE}}; margin-bottom: {{SPACE_XS}};">
+                <strong>Last Updated:</strong> @LastUpdated.ToString("g")
+            </p>
+            
+            @if (!string.IsNullOrEmpty(Status))
+            {
+                <p style="color: {{COLOR_INFO}}; margin-bottom: {{SPACE_XS}};">
+                    <strong>Status:</strong> @Status
+                </p>
+            }
+        </div>
+    }
+    else
+    {
+        <p style="color: {{COLOR_ONSURFACE}}; margin: 0; font-size: 0.875rem;">
+            @LastUpdated.ToString("d")
+        </p>
+    }
+    
+    <div class="card-actions" style="margin-top: {{SPACE_SM}};">
+        <button @onclick="HandleClick" 
+                class="btn btn-primary"
+                style="background: {{COLOR_PRIMARY}}; color: {{COLOR_ONPRIMARY}}; padding: {{SPACE_XS}} {{SPACE_SM}};">
+            @CtaText
+        </button>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public string PatientName { get; set; } = "";
+    
+    [Parameter]
+    public DateTime LastUpdated { get; set; } = DateTime.Now;
+    
+    [Parameter]
+    public string Status { get; set; } = "";
+    
+    [Parameter]
+    public string CtaText { get; set; } = "View Details";
+    
+    [Parameter]
+    public CardVariant Variant { get; set; } = CardVariant.Compact;
+    
+    [Parameter]
+    public EventCallback OnClick { get; set; }
+    
+    private async Task HandleClick()
+    {
+        await OnClick.InvokeAsync();
+    }
+    
+    public enum CardVariant
+    {
+        Compact,
+        Detailed
+    }
+}

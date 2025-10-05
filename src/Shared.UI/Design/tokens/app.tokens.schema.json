@@ -1,0 +1,125 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Design Tokens Schema",
+  "description": "Single source of truth for design tokens. AUTO-GENERATED from Figma. Do not edit manually.",
+  "type": "object",
+  "properties": {
+    "color": {
+      "type": "object",
+      "description": "Color tokens",
+      "properties": {
+        "primary": { "$ref": "#/definitions/colorToken" },
+        "onPrimary": { "$ref": "#/definitions/colorToken" },
+        "secondary": { "$ref": "#/definitions/colorToken" },
+        "onSecondary": { "$ref": "#/definitions/colorToken" },
+        "surface": { "$ref": "#/definitions/colorToken" },
+        "onSurface": { "$ref": "#/definitions/colorToken" },
+        "background": { "$ref": "#/definitions/colorToken" },
+        "onBackground": { "$ref": "#/definitions/colorToken" },
+        "success": { "$ref": "#/definitions/colorToken" },
+        "warning": { "$ref": "#/definitions/colorToken" },
+        "error": { "$ref": "#/definitions/colorToken" },
+        "info": { "$ref": "#/definitions/colorToken" }
+      }
+    },
+    "typography": {
+      "type": "object",
+      "description": "Typography tokens",
+      "properties": {
+        "display": { "$ref": "#/definitions/typographyToken" },
+        "title": { "$ref": "#/definitions/typographyToken" },
+        "body": { "$ref": "#/definitions/typographyToken" },
+        "caption": { "$ref": "#/definitions/typographyToken" }
+      }
+    },
+    "space": {
+      "type": "object",
+      "description": "Spacing tokens",
+      "properties": {
+        "xs": { "$ref": "#/definitions/dimensionToken" },
+        "sm": { "$ref": "#/definitions/dimensionToken" },
+        "md": { "$ref": "#/definitions/dimensionToken" },
+        "lg": { "$ref": "#/definitions/dimensionToken" },
+        "xl": { "$ref": "#/definitions/dimensionToken" }
+      }
+    },
+    "radius": {
+      "type": "object",
+      "description": "Border radius tokens",
+      "properties": {
+        "sm": { "$ref": "#/definitions/dimensionToken" },
+        "md": { "$ref": "#/definitions/dimensionToken" },
+        "lg": { "$ref": "#/definitions/dimensionToken" },
+        "xl": { "$ref": "#/definitions/dimensionToken" },
+        "2xl": { "$ref": "#/definitions/dimensionToken" }
+      }
+    },
+    "elevation": {
+      "type": "object",
+      "description": "Elevation/shadow tokens",
+      "properties": {
+        "level0": { "$ref": "#/definitions/shadowToken" },
+        "level1": { "$ref": "#/definitions/shadowToken" },
+        "level2": { "$ref": "#/definitions/shadowToken" },
+        "level3": { "$ref": "#/definitions/shadowToken" },
+        "level4": { "$ref": "#/definitions/shadowToken" }
+      }
+    }
+  },
+  "definitions": {
+    "colorToken": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "string",
+          "pattern": "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{8})$"
+        },
+        "type": {
+          "type": "string",
+          "const": "color"
+        }
+      },
+      "required": ["value", "type"]
+    },
+    "typographyToken": {
+      "type": "object",
+      "properties": {
+        "fontFamily": { "type": "string" },
+        "fontSize": { "type": "string" },
+        "fontWeight": { "type": ["string", "number"] },
+        "lineHeight": { "type": ["string", "number"] },
+        "letterSpacing": { "type": "string" },
+        "type": {
+          "type": "string",
+          "const": "typography"
+        }
+      },
+      "required": ["type"]
+    },
+    "dimensionToken": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "string",
+          "pattern": "^[0-9]+(px|rem|em|%)$"
+        },
+        "type": {
+          "type": "string",
+          "enum": ["dimension", "spacing", "borderRadius"]
+        }
+      },
+      "required": ["value", "type"]
+    },
+    "shadowToken": {
+      "type": "object",
+      "properties": {
+        "value": { "type": "string" },
+        "type": {
+          "type": "string",
+          "const": "shadow"
+        }
+      },
+      "required": ["value", "type"]
+    }
+  }
+}

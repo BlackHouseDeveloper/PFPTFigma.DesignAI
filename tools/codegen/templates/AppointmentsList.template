@@ -1,0 +1,98 @@
+@* AUTO-GENERATED Component - Edit template, not this file *@
+@using Microsoft.AspNetCore.Components.Web.Virtualization
+
+<div class="{{COMPONENT_NAME}}" 
+     style="background: {{COLOR_BACKGROUND}}; padding: {{SPACE_MD}};"
+     @onkeydown="HandleKeyDown"
+     tabindex="0">
+    
+    <h2 style="color: {{COLOR_ONBACKGROUND}}; margin-bottom: {{SPACE_MD}};">Appointments</h2>
+    
+    <Virtualize Items="@Items" Context="appointment">
+        <div class="appointment-item @(appointment.Id == focusedItemId ? "focused" : "")"
+             tabindex="0"
+             @onclick="() => HandleItemClick(appointment)"
+             @onfocus="() => focusedItemId = appointment.Id"
+             style="background: {{COLOR_SURFACE}}; padding: {{SPACE_SM}}; margin-bottom: {{SPACE_XS}}; border: 2px solid @(appointment.Id == focusedItemId ? "{{COLOR_PRIMARY}}" : "transparent");">
+            
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h4 style="color: {{COLOR_ONSURFACE}}; margin: 0 0 {{SPACE_XS}} 0;">
+                        @appointment.PatientName
+                    </h4>
+                    <p style="color: {{COLOR_ONSURFACE}}; margin: 0; font-size: 0.875rem;">
+                        @appointment.Time.ToString("g")
+                    </p>
+                </div>
+                
+                <div>
+                    <span style="background: {{COLOR_INFO}}; color: {{COLOR_SURFACE}}; padding: {{SPACE_XS}} {{SPACE_SM}}; border-radius: 4px;">
+                        @appointment.Status
+                    </span>
+                </div>
+            </div>
+        </div>
+    </Virtualize>
+    
+    @if (Items == null || !Items.Any())
+    {
+        <div style="text-align: center; padding: {{SPACE_LG}}; color: {{COLOR_ONSURFACE}};">
+            <p>No appointments scheduled</p>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public List<AppointmentItem> Items { get; set; } = new();
+    
+    [Parameter]
+    public EventCallback<AppointmentItem> OnItemClick { get; set; }
+    
+    private int focusedItemId = -1;
+    
+    private async Task HandleItemClick(AppointmentItem appointment)
+    {
+        focusedItemId = appointment.Id;
+        await OnItemClick.InvokeAsync(appointment);
+    }
+    
+    private async Task HandleKeyDown(KeyboardEventArgs e)
+    {
+        if (Items == null || !Items.Any()) return;
+        
+        var currentIndex = Items.FindIndex(i => i.Id == focusedItemId);
+        
+        switch (e.Key)
+        {
+            case "ArrowDown":
+                if (currentIndex < Items.Count - 1)
+                {
+                    focusedItemId = Items[currentIndex + 1].Id;
+                }
+                break;
+                
+            case "ArrowUp":
+                if (currentIndex > 0)
+                {
+                    focusedItemId = Items[currentIndex - 1].Id;
+                }
+                break;
+                
+            case "Enter":
+                if (currentIndex >= 0)
+                {
+                    await HandleItemClick(Items[currentIndex]);
+                }
+                break;
+        }
+    }
+    
+    public class AppointmentItem
+    {
+        public int Id { get; set; }
+        public string PatientName { get; set; } = "";
+        public DateTime Time { get; set; }
+        public string Status { get; set; } = "";
+    }
+}

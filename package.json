@@ -4,10 +4,11 @@
   "description": "External automation repo for PFPT UI token management and code generation",
   "type": "module",
   "scripts": {
-    "figma:pull": "node scripts/figma-pull.mjs",
-    "tokens:build": "node scripts/build-tokens.mjs",
-    "a11y:check": "node scripts/a11y-check.mjs",
-    "sync": "pnpm run figma:pull && pnpm run tokens:build && pnpm run a11y:check"
+    "figma:pull": "node tools/figma-token-build/scripts/figma-pull.mjs",
+    "tokens:build": "node tools/figma-token-build/scripts/build-tokens.mjs",
+    "a11y:check": "node tools/a11y/a11y-check.mjs",
+    "sync": "pnpm run figma:pull && pnpm run tokens:build && pnpm run a11y:check",
+    "codegen": "node tools/codegen/generate-components.mjs"
   },
   "keywords": [
     "figma",

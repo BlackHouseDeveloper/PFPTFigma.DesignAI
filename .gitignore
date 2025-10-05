@@ -10,10 +10,23 @@ node_modules/
 # Build artifacts
 dist/
 build/
+bin/
+obj/
 artifacts/*.css
 artifacts/*.xaml
 artifacts/*.json
 !artifacts/.gitkeep
+
+# Generated files (from tokens)
+src/Shared.UI/Styles/Theme.xaml
+src/Shared.UI/wwwroot/css/_tokens.css
+
+# Legacy token files (use app.tokens.json instead)
+src/Shared.UI/Design/tokens/color.json
+src/Shared.UI/Design/tokens/typography.json
+src/Shared.UI/Design/tokens/space.json
+src/Shared.UI/Design/tokens/radius.json
+src/Shared.UI/Design/tokens/elevation.json
 
 # Environment and secrets
 .env
