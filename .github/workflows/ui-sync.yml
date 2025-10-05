@@ -44,13 +44,20 @@ jobs:
         env:
           FIGMA_TOKEN: ${{ secrets.FIGMA_TOKEN }}
           FIGMA_FILE_KEY: ${{ secrets.FIGMA_FILE_KEY }}
-        run: pnpm run figma:pull
+        run: npm run figma:pull
       
       - name: Build design tokens
-        run: pnpm run tokens:build
+        run: npm run tokens:build
+      
+      - name: Generate components
+        run: npm run codegen
       
       - name: Run accessibility checks
-        run: pnpm run a11y:check
+        run: npm run a11y:check
+        continue-on-error: true
+      
+      - name: Run agent orchestration
+        run: node agents/runner/orchestrate.mjs
         continue-on-error: true
       
       - name: Check for changes
@@ -63,8 +70,8 @@ jobs:
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git add tokens/ artifacts/
-          git commit -m "chore: sync design tokens from Figma [skip ci]"
+          git add src/Shared.UI/Design/tokens/ artifacts/ src/Shared.UI/Styles/ src/Shared.UI/wwwroot/ src/Shared.UI/Components/
+          git commit -m "chore: sync design tokens and components from Figma [skip ci]"
           git push
       
       - name: Upload artifacts
@@ -76,4 +83,7 @@ jobs:
             artifacts/design-tokens.css
             artifacts/design-tokens.xaml
             artifacts/design-tokens.json
+            src/Shared.UI/Styles/Theme.xaml
+            src/Shared.UI/wwwroot/css/_tokens.css
+            src/Shared.UI/Components/*.razor
           retention-days: 30

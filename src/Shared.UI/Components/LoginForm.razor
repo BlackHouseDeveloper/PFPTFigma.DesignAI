@@ -1,0 +1,79 @@
+@* AUTO-GENERATED Component - Edit template, not this file *@
+
+<div class="LoginForm" style="background: #FFFFFF; padding: 24px;">
+    <h2 style="color: #000000;">@Title</h2>
+    
+    <EditForm Model="@loginModel" OnValidSubmit="@HandleSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        
+        <div class="form-group" style="margin-bottom: 16px;">
+            <label for="username" style="color: #000000;">Username</label>
+            <InputText id="username" @bind-Value="loginModel.Username" 
+                       class="form-control" 
+                       aria-required="true" />
+        </div>
+        
+        <div class="form-group" style="margin-bottom: 16px;">
+            <label for="password" style="color: #000000;">Password</label>
+            <InputText id="password" @bind-Value="loginModel.Password" 
+                       type="password" 
+                       class="form-control" 
+                       aria-required="true" />
+        </div>
+        
+        @if (ShowForgotPin)
+        {
+            <div style="margin-bottom: 8px;">
+                <a href="#" style="color: #007AFF;">Forgot PIN?</a>
+            </div>
+        }
+        
+        <div aria-live="polite" aria-atomic="true">
+            @if (!string.IsNullOrEmpty(errorMessage))
+            {
+                <div class="alert alert-danger" role="alert" style="color: #FF3B30;">
+                    @errorMessage
+                </div>
+            }
+        </div>
+        
+        <button type="submit" 
+                class="btn btn-primary" 
+                style="background: #007AFF; color: #FFFFFF; padding: 8px 16px;">
+            Login
+        </button>
+    </EditForm>
+</div>
+
+@code {
+    [Parameter]
+    public string Title { get; set; } = "Login";
+    
+    [Parameter]
+    public bool ShowForgotPin { get; set; } = true;
+    
+    [Parameter]
+    public EventCallback<LoginModel> OnSubmit { get; set; }
+    
+    private LoginModel loginModel = new();
+    private string errorMessage = "";
+    
+    private async Task HandleSubmit()
+    {
+        try
+        {
+            await OnSubmit.InvokeAsync(loginModel);
+        }
+        catch (Exception ex)
+        {
+            errorMessage = ex.Message;
+        }
+    }
+    
+    public class LoginModel
+    {
+        public string Username { get; set; } = "";
+        public string Password { get; set; } = "";
+    }
+}

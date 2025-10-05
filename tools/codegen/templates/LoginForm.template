@@ -1,0 +1,79 @@
+@* AUTO-GENERATED Component - Edit template, not this file *@
+
+<div class="{{COMPONENT_NAME}}" style="background: {{COLOR_SURFACE}}; padding: {{SPACE_LG}};">
+    <h2 style="color: {{COLOR_ONSURFACE}};">@Title</h2>
+    
+    <EditForm Model="@loginModel" OnValidSubmit="@HandleSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        
+        <div class="form-group" style="margin-bottom: {{SPACE_MD}};">
+            <label for="username" style="color: {{COLOR_ONSURFACE}};">Username</label>
+            <InputText id="username" @bind-Value="loginModel.Username" 
+                       class="form-control" 
+                       aria-required="true" />
+        </div>
+        
+        <div class="form-group" style="margin-bottom: {{SPACE_MD}};">
+            <label for="password" style="color: {{COLOR_ONSURFACE}};">Password</label>
+            <InputText id="password" @bind-Value="loginModel.Password" 
+                       type="password" 
+                       class="form-control" 
+                       aria-required="true" />
+        </div>
+        
+        @if (ShowForgotPin)
+        {
+            <div style="margin-bottom: {{SPACE_SM}};">
+                <a href="#" style="color: {{COLOR_PRIMARY}};">Forgot PIN?</a>
+            </div>
+        }
+        
+        <div aria-live="polite" aria-atomic="true">
+            @if (!string.IsNullOrEmpty(errorMessage))
+            {
+                <div class="alert alert-danger" role="alert" style="color: {{COLOR_ERROR}};">
+                    @errorMessage
+                </div>
+            }
+        </div>
+        
+        <button type="submit" 
+                class="btn btn-primary" 
+                style="background: {{COLOR_PRIMARY}}; color: {{COLOR_ONPRIMARY}}; padding: {{SPACE_SM}} {{SPACE_MD}};">
+            Login
+        </button>
+    </EditForm>
+</div>
+
+@code {
+    [Parameter]
+    public string Title { get; set; } = "Login";
+    
+    [Parameter]
+    public bool ShowForgotPin { get; set; } = true;
+    
+    [Parameter]
+    public EventCallback<LoginModel> OnSubmit { get; set; }
+    
+    private LoginModel loginModel = new();
+    private string errorMessage = "";
+    
+    private async Task HandleSubmit()
+    {
+        try
+        {
+            await OnSubmit.InvokeAsync(loginModel);
+        }
+        catch (Exception ex)
+        {
+            errorMessage = ex.Message;
+        }
+    }
+    
+    public class LoginModel
+    {
+        public string Username { get; set; } = "";
+        public string Password { get; set; } = "";
+    }
+}

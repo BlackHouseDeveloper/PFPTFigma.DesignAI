@@ -1,0 +1,70 @@
+@* AUTO-GENERATED Component - Edit template, not this file *@
+
+<div class="IntakeCard IntakeCard--@Variant.ToString().ToLower()" 
+     style="background: #FFFFFF; padding: @(Variant == CardVariant.Compact ? "8px" : "16px"); margin-bottom: 8px;">
+    
+    <div class="card-header" style="margin-bottom: 8px;">
+        <h3 style="color: #000000; margin: 0;">@PatientName</h3>
+    </div>
+    
+    @if (Variant == CardVariant.Detailed)
+    {
+        <div class="card-body">
+            <p style="color: #000000; margin-bottom: 4px;">
+                <strong>Last Updated:</strong> @LastUpdated.ToString("g")
+            </p>
+            
+            @if (!string.IsNullOrEmpty(Status))
+            {
+                <p style="color: #007AFF; margin-bottom: 4px;">
+                    <strong>Status:</strong> @Status
+                </p>
+            }
+        </div>
+    }
+    else
+    {
+        <p style="color: #000000; margin: 0; font-size: 0.875rem;">
+            @LastUpdated.ToString("d")
+        </p>
+    }
+    
+    <div class="card-actions" style="margin-top: 8px;">
+        <button @onclick="HandleClick" 
+                class="btn btn-primary"
+                style="background: #007AFF; color: #FFFFFF; padding: 4px 8px;">
+            @CtaText
+        </button>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public string PatientName { get; set; } = "";
+    
+    [Parameter]
+    public DateTime LastUpdated { get; set; } = DateTime.Now;
+    
+    [Parameter]
+    public string Status { get; set; } = "";
+    
+    [Parameter]
+    public string CtaText { get; set; } = "View Details";
+    
+    [Parameter]
+    public CardVariant Variant { get; set; } = CardVariant.Compact;
+    
+    [Parameter]
+    public EventCallback OnClick { get; set; }
+    
+    private async Task HandleClick()
+    {
+        await OnClick.InvokeAsync();
+    }
+    
+    public enum CardVariant
+    {
+        Compact,
+        Detailed
+    }
+}
