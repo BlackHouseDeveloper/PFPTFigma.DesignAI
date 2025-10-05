@@ -52,7 +52,8 @@ function getContrastRatio(hex1, hex2) {
  * Convert hex color to RGB
  */
 function hexToRgb(hex) {
-  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  // Support #RRGGBB and #RRGGBBAA (ignore alpha for RGB)
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})?$/i.exec(hex);
   return result ? {
     r: parseInt(result[1], 16),
     g: parseInt(result[2], 16),
