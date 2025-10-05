@@ -63,7 +63,7 @@ test: test.bunit test.a11y
 # Run accessibility tests
 test.a11y:
 	@echo "♿ Running accessibility checks..."
-	@node tools/a11y/axe-check.mjs
+	@node tools/a11y/a11y-check.mjs
 	@echo "✅ Accessibility checks passed"
 
 # Run component unit tests
