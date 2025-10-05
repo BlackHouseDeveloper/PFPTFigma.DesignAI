@@ -28,7 +28,12 @@ const FIGMA_API_BASE = 'https://api.figma.com/v1';
 const TOKENS_DIR = path.join(__dirname, '..', '..', '..', 'src', 'Shared.UI', 'Design', 'tokens');
 
 /**
- * Fetch Figma file data
+ * Fetches the Figma file data from the Figma API.
+ *
+ * @returns {Promise<Object>} Resolves with the Figma file data as returned by the API.
+ * @throws {Error} Throws if the request fails due to network issues, authentication errors,
+ *   or if the Figma API returns an error response. The error object may contain additional
+ *   information such as HTTP status and response data.
  */
 async function fetchFigmaFile() {
   console.log('🔍 Fetching Figma file...');
