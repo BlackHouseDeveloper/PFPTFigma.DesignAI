@@ -55,9 +55,16 @@ async function runAgent(agentName, input) {
     });
     
     // Write input as JSON to stdin
-    agent.stdin.write(JSON.stringify(input));
+    let inputJson;
+    try {
+      inputJson = JSON.stringify(input);
+    } catch (err) {
+      reject(new Error(`Failed to serialize input for agent ${agentName}: ${err.message}`));
+      agent.stdin.end();
+      return;
+    }
+    agent.stdin.write(inputJson);
     agent.stdin.end();
-  });
 }
 
 /**
