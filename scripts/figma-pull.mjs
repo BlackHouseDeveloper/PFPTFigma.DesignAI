@@ -60,22 +60,70 @@ async function fetchFigmaFile() {
  */
 function extractTokens(figmaData) {
   console.log('🔧 Extracting design tokens...');
-  
+
+  // Helper: Convert Figma color object to hex
+  function figmaColorToHex(color) {
+    const r = Math.round(color.r * 255);
+    const g = Math.round(color.g * 255);
+    const b = Math.round(color.b * 255);
+    if (color.a !== undefined && color.a < 1) {
+      const a = Math.round(color.a * 255);
+      return (
+        '#' +
+        r.toString(16).padStart(2, '0') +
+        g.toString(16).padStart(2, '0') +
+        b.toString(16).padStart(2, '0') +
+        a.toString(16).padStart(2, '0')
+      );
+    }
+    return (
+      '#' +
+      r.toString(16).padStart(2, '0') +
+      g.toString(16).padStart(2, '0') +
+      b.toString(16).padStart(2, '0')
+    );
+  }
+
+  // Helper: Recursively traverse document tree to find nodes by styleId
+  function findNodeWithStyleId(node, styleId, nodes = []) {
+    if (node.styles && node.styles.fill === styleId && node.fills && node.fills.length > 0) {
+      nodes.push(node);
+    }
+    if (node.children && node.children.length > 0) {
+      node.children.forEach(child => findNodeWithStyleId(child, styleId, nodes));
+    }
+    return nodes;
+  }
+
   const tokens = {
     colors: {},
     typography: {},
     spacing: {}
   };
 
-  // Basic extraction logic - this would need to be customized based on
-  // how your Figma file is structured
-  // For now, we'll create a placeholder structure
-  
-  if (figmaData.styles) {
+  if (figmaData.styles && figmaData.document) {
     Object.entries(figmaData.styles).forEach(([key, style]) => {
       if (style.styleType === 'FILL') {
+        // Find a node that uses this style
+        const nodes = findNodeWithStyleId(figmaData.document, key);
+        let colorValue = '#000000';
+        if (nodes.length > 0) {
+          // Use the first node found
+          const fills = nodes[0].fills;
+          if (Array.isArray(fills)) {
+            const solidFill = fills.find(f => f.type === 'SOLID');
+            if (solidFill && solidFill.color) {
+              colorValue = figmaColorToHex({
+                r: solidFill.color.r,
+                g: solidFill.color.g,
+                b: solidFill.color.b,
+                a: solidFill.opacity !== undefined ? solidFill.opacity : (solidFill.color.a !== undefined ? solidFill.color.a : 1)
+              });
+            }
+          }
+        }
         tokens.colors[style.name] = {
-          value: style.description || '#000000',
+          value: colorValue,
           type: 'color'
         };
       }
