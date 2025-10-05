@@ -1,0 +1,31 @@
+{
+  "name": "pfpt-design-ai",
+  "version": "1.0.0",
+  "description": "External automation repo for PFPT UI token management and code generation",
+  "type": "module",
+  "scripts": {
+    "figma:pull": "node scripts/figma-pull.mjs",
+    "tokens:build": "node scripts/build-tokens.mjs",
+    "a11y:check": "node scripts/a11y-check.mjs",
+    "sync": "pnpm run figma:pull && pnpm run tokens:build && pnpm run a11y:check"
+  },
+  "keywords": [
+    "figma",
+    "design-tokens",
+    "style-dictionary",
+    "accessibility",
+    "design-system"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "style-dictionary": "^4.0.0",
+    "axios": "^1.6.0"
+  },
+  "devDependencies": {
+    "dotenv": "^16.3.1"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}

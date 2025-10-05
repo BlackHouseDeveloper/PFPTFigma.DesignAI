@@ -1,0 +1,79 @@
+name: UI Token Sync
+
+on:
+  # Manual trigger
+  workflow_dispatch:
+  
+  # Scheduled run (e.g., daily at 2 AM UTC)
+  schedule:
+    - cron: '0 2 * * *'
+  
+  # Trigger on push to main (for testing)
+  push:
+    branches:
+      - main
+    paths:
+      - 'scripts/**'
+      - 'style-dictionary.config.cjs'
+      - 'package.json'
+
+jobs:
+  sync-design-tokens:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GH_PAT || github.token }}
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.node-version'
+      
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+      
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      
+      - name: Pull tokens from Figma
+        env:
+          FIGMA_TOKEN: ${{ secrets.FIGMA_TOKEN }}
+          FIGMA_FILE_KEY: ${{ secrets.FIGMA_FILE_KEY }}
+        run: pnpm run figma:pull
+      
+      - name: Build design tokens
+        run: pnpm run tokens:build
+      
+      - name: Run accessibility checks
+        run: pnpm run a11y:check
+        continue-on-error: true
+      
+      - name: Check for changes
+        id: git-check
+        run: |
+          git diff --exit-code || echo "changes=true" >> $GITHUB_OUTPUT
+      
+      - name: Commit and push changes
+        if: steps.git-check.outputs.changes == 'true'
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add tokens/ artifacts/
+          git commit -m "chore: sync design tokens from Figma [skip ci]"
+          git push
+      
+      - name: Upload artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: design-tokens
+          path: |
+            artifacts/design-tokens.css
+            artifacts/design-tokens.xaml
+            artifacts/design-tokens.json
+          retention-days: 30
