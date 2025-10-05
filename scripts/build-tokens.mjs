@@ -59,7 +59,7 @@ function buildTokens() {
   try {
     // Run style-dictionary build command
     // Using the config file we created
-    execSync('npx style-dictionary build', {
+    execSync('node_modules/.bin/style-dictionary build', {
       cwd: path.join(__dirname, '..'),
       stdio: 'inherit'
     });
