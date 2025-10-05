@@ -63,7 +63,18 @@ function buildTokens() {
   try {
     // Run style-dictionary build command with explicit config path
     const rootDir = path.join(__dirname, '..', '..', '..');
-    const configPath = path.join(rootDir, 'style-dictionary.config.mjs');
+    // Allow config path to be set via env var or --config argument
+    let configPath = process.env.STYLE_DICTIONARY_CONFIG;
+    if (!configPath) {
+      // Check for --config argument
+      const configArgIndex = process.argv.indexOf('--config');
+      if (configArgIndex !== -1 && process.argv.length > configArgIndex + 1) {
+        configPath = process.argv[configArgIndex + 1];
+      }
+    }
+    if (!configPath) {
+      configPath = path.join(rootDir, 'style-dictionary.config.mjs');
+    }
     
     execSync(`npx style-dictionary build --config ${configPath}`, {
       cwd: rootDir,
